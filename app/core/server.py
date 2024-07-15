@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.admin.admin import setup_admin
 from app.api import __routes__
 
 
@@ -16,6 +18,7 @@ class Server:
         self.__register_events(app)
         self.__register_middlewares(app)
         self.__register_websocket(app)
+        self.__register_admin(app)
 
     def get_app(self):
         return self.__app
@@ -27,6 +30,11 @@ class Server:
     @staticmethod
     def __register_websocket(app):
         pass
+
+    @staticmethod
+    def __register_admin(app):
+        setup_admin(app)
+        return app
 
     @staticmethod
     def __register_events(app: FastAPI):
