@@ -12,3 +12,6 @@ bcrypt==4.1.1
 black
 werkzeug~=3.0.3
 starlette~=0.14.2
+sqladmin~=0.18.0
+itsdangerous
+cryptography

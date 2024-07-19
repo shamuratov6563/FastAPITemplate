@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+
+from app.admin.admin import setup_admin
 from app.api import __routes__
 from app.core import SETTINGS
 
 
-def on_startup() -> None:
+async def on_startup() -> None:
     print('The app is working 🎊🎉🎛')
 
 
@@ -18,6 +20,7 @@ class Server:
         self.__register_events(app)
         self.__register_middlewares(app)
         self.__register_websocket(app)
+        self.__register_admin(app)
         self.__register_media_files(app)
         self.__register_static_files(app)
 
@@ -31,6 +34,11 @@ class Server:
     @staticmethod
     def __register_websocket(app):
         pass
+
+    @staticmethod
+    def __register_admin(app):
+        setup_admin(app)
+        return app
 
     @staticmethod
     def __register_events(app: FastAPI):
