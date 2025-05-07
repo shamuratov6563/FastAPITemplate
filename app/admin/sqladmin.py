@@ -8,33 +8,53 @@ from app.models import (
 # ModelView'lar
 class UserAdmin(ModelView, model=User):
     column_list = [User.id, User.full_name, User.username, User.role]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 class BranchAdmin(ModelView, model=Branch):
     column_list = [Branch.id, Branch.name]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 class RoleAdmin(ModelView, model=Role):
     column_list = [Role.id, Role.name]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 class ActivityAdmin(ModelView, model=Activity):
     column_list = [Activity.id, Activity.name, Activity.description]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 class GroupAdmin(ModelView, model=Group):
     column_list = [Group.id, Group.name]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 class UserBranchAdmin(ModelView, model=UserBranch):
     column_list = [UserBranch.id, UserBranch.user_id, UserBranch.branch_id]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 class UserRoleAdmin(ModelView, model=UserRole):
     column_list = [UserRole.id, UserRole.user_id, UserRole.role_id]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 class UserDescriptionAdmin(ModelView, model=UserDescription):
     column_list = [UserDescription.id, UserDescription.user_id, UserDescription.description]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 class AttendanceAdmin(ModelView, model=Attendance):
     column_list = [Attendance.id, Attendance.date, Attendance.group_id]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 class WorkingDayAdmin(ModelView, model=WorkingDay):
     column_list = [WorkingDay.id, WorkingDay.day_of_week, WorkingDay.group_id]
+    form_excluded_columns = ["created_at", "updated_at"]
+
 
 
 
