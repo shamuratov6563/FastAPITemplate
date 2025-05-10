@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, ForeignKey, Time, Date, DateTime, func
+from sqlalchemy import Column, Integer, String, Text, Boolean, ForeignKey, Time, Date, DateTime, func, Enum
 from sqlalchemy.orm import relationship
 from app.db import Base
 
@@ -53,10 +53,11 @@ class User(BaseModel):
     role = Column(String, nullable=False)  
     is_active = Column(Boolean, default=False)
 
+
     branches = relationship("UserBranch", back_populates="user_obj")
     roles = relationship("UserRole", back_populates="user_obj")
     description = relationship("UserDescription", back_populates="user", uselist=False)
-    attendances = relationship("Attendance", back_populates="user")
+    user_groups = relationship("UserGroup", back_populates="user")
 
 class UserBranch(BaseModel):
     __tablename__ = "user_branch"
@@ -104,8 +105,8 @@ class Group(BaseModel):
     activity_obj = relationship("Activity", back_populates="groups")
     branch_obj = relationship("Branch")
     working_days = relationship("WorkingDay", back_populates="group")
-    attendances = relationship("Attendance", back_populates="group")
-
+    user_groups = relationship("UserGroup", back_populates="group")
+  
 
 
 class WorkingDay(BaseModel):
@@ -126,9 +127,69 @@ class Attendance(BaseModel):
 
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, ForeignKey('user.id'))
+    user_group_id = Column(Integer, ForeignKey('user_group.id'))
     date = Column(Date)
     group_id = Column(Integer, ForeignKey('group.id'))
     is_available = Column(Boolean, default=False)
     
-    user = relationship("User", back_populates="attendances")
-    group = relationship("Group", back_populates="attendances")
+    user_groups = relationship("UserGroup",back_populates="attendance")
+   
+
+
+class StatusChoices(Enum):
+    ACTIVE = "ACTIVE"
+    ARXIV = "ARXIV"
+
+
+class UserGroup(BaseModel):
+    __tablename__ = "user_group"
+
+    id = Column(Integer, primary_key=True, index=True)
+    status = Column(String(50), default=StatusChoices.ACTIVE)
+    added_date = Column(DateTime, nullable=False) 
+    user_id = Column(Integer, ForeignKey('user.id'))
+    group_id = Column(Integer, ForeignKey("group.id"))
+
+    user = relationship("User", back_populates="user_groups")
+    group = relationship("Group", back_populates="user_groups")
+    attendance = relationship("Attendance",back_populates="user_groups")
+
+
+
+class TicketMessage(BaseModel):
+    __tablename__ = "ticket_message"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, ForeignKey('ticket.id'), nullable=False)
+    sender_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    admin_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+    message = Column(Text, nullable=True)
+    file = Column(String, nullable=True)  # file yo‘li yoki fayl nomi
+
+    ticket = relationship("Ticket", back_populates="messages")
+    sender = relationship("User", foreign_keys=[sender_id])
+    admin = relationship("User", foreign_keys=[admin_id])
+
+
+
+
+class TicketStatusEnum(Enum):
+    OPEN = "OPEN"
+    CLOSED = "CLOSED"
+    IN_PROGRESS = "IN_PROGRESS"
+
+
+class Ticket(BaseModel):
+    __tablename__ = "ticket"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    branch_id = Column(Integer, ForeignKey('branch.id'), nullable=False)
+    status = Column(String(50), default=TicketStatusEnum.OPEN)
+
+    branch = relationship("Branch")
+    messages = relationship("TicketMessage", back_populates="ticket", cascade="all, delete-orphan")
+
+
+
+    
