@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.admin.admin import setup_admin
 from app.core import SETTINGS
+from app.api import __routes__
 
 
 async def on_startup() -> None:
@@ -27,8 +28,7 @@ class Server:
 
     @staticmethod
     def __register_router(app):
-        from app.api.router import api_router
-        app.include_router(api_router)
+        __routes__.register_routes(app)
 
     @staticmethod
     def __register_websocket(app):

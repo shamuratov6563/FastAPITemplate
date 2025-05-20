@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -6,13 +5,17 @@ from utils.tenants import get_tenant_name
 from app.db.session_manager import get_session
 from app.models import User
 
-router = APIRouter()
+router = APIRouter(
+    tags=["User Auth"],
+)
+
 
 class RegisterSchema(BaseModel):
     full_name: str
     username: str
     phone: str | None = None
     role: str
+
 
 @router.post("/register/")
 def register_user(payload: RegisterSchema, request: Request):

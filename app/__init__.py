@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from app.core import Server, SETTINGS
-from app.admin.admin import setup_admin
 
-app = FastAPI(
-    title=SETTINGS.PROJECT_NAME,
-    debug=SETTINGS.DEBUG,
-)
 
-# Admin panelni ulaymiz
-setup_admin(app)
-
+def app(_=None) -> FastAPI:
+    main = FastAPI(
+        title=SETTINGS.PROJECT_NAME,
+        debug=SETTINGS.DEBUG,
+        # docs_url=None,
+        # redoc_url=None,
+        # openapi_url=None,
+    )
+    return Server(main).get_app()
